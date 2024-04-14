@@ -1,79 +1,8 @@
-# ros_course
-Репозиторий для задач в рамках курса "Программное обеспечение управляющих комплексов"
-## Сборка проектов (общая инструкция)
-1. Создаем рабочую директорию с произвольным именем (наприме ros_ws):
-   ```bash
-   mkdir <имя рабочей директории>
-   ```
-2. Клонируем репозитарий в папку src внутри рабочей директории:
-   - заходим в рабочую директорию  
-   ```bash 
-   cd <имя рабочей директории>
-   ```  
-   - клонируем репо  
-   ```bash
-   git clone https://github.com/AndreyMinin/ros_course.git src
-   ```
-   - в рабочей папке должна появиться папка `src`, внутри которой будут папки проектов 
-3. Инициализируем рабочую директорию ROS 
-   ```bash
-   catkin_init_workspace src
-   ```
-4. Собираем проекты (находясь в корне рабочей директории):
-   - сборка
-   ```bash
-   catkin_make
-   ```
-   - в терминале отобразится процесс сборки, можно будет увидеть список проектов
-   - в результате появятся папки `devel` и `build` 
-5. В последующем, для обновления проектов 
-   - заходим в папку src  
-   ```bash
-   cd src 
-   ```
-   - обновляем проекты с репозитория  
-   ```bash
-   git pull
-   ```
-6. Запуск исполняемого файла (приложения, собранного в проекте):
-   - должен быть запущен процесс rosmaster - в терминале команда  
-   ```bash
-   roscore
-   ```
-   - открываем новый терминал и переходим в рабочую папку 
-   ```bash
-   cd ros_ws
-   ```
-   - инициализируем окружение рабочей папки  
-   ```bash
-   source devel/setup.bash
-   ```   
-   - запуск  
-   ```bash
-   rosrun <имя проекта> <имя исполняемого файла>
-   ```
-   - имя исполняемого файла - имя, заданное в директиве `add_executable` в файле CMakeLists.txt каждого проекта
-   - на имя пакета и имя файла работает автодополнение <tab>
-7. Запуск launch файла:
-   - roscore можно не запускать - запустится автоматически
-   - открываем новый терминал и переходим в рабочую папку 
-   ```bash
-   cd ros_ws
-   ```
-   - инициализируем окружение рабочей папки  
-   ```bash
-   source devel/setup.bash
-   ```   
-   - запуск  
-   ```bash
-   roslaunch <имя проекта> <имя launch файла>
-   ```
-   - на имя проекта и имя launch файла работает автодополнение <tab>
-   
- ## Практические задания (подробное описание по ссылкам) 
- 1. [Обмен сообщениями](https://github.com/AndreyMinin/ros_course/tree/master/chat)
- 2. [Управление моделью мобильного робота](https://github.com/AndreyMinin/ros_course/tree/master/robot_control)
- 3. [Управление движением робота вдоль траектории](https://github.com/AndreyMinin/ros_course/tree/master/line_control)
- 4. [Управление роботом с возможностью выбора алгоритма](https://github.com/AndreyMinin/ros_course/tree/master/control_selector)
- 5. [Построение карты](https://github.com/AndreyMinin/ros_course/tree/master/simple_map)
- 6. [Режим патрулирования](https://github.com/AndreyMinin/ros_course/tree/master/patrol_bot)
+1. sudo apt install ros-melodic-move-base-msgs
+2. mkdir labs
+3. cd labs
+4. git clone git@github.com:Kubikator/ROS_Labs.git src
+5. catkin_init_workspace src
+6. Когда дописали коды и хотите собрать проект пишем, находясь в директории labs/
+	catkin_make
+
