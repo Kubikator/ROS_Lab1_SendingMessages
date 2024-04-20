@@ -3,6 +3,8 @@
 #include "nav_msgs/Odometry.h"
 
 bool obstacle = false;
+double error = 0;
+const static double target_range = 1;
 ros::Publisher pub;
 
 /**
@@ -14,10 +16,15 @@ void laserCallback(const sensor_msgs::LaserScan& msg)
 {
   ROS_DEBUG_STREAM("Laser msg: "<<msg.scan_time);
 
-  const double kMinRange = 0.3;
+  const double kMinRange = 0.7;
   //проверим нет ли вблизи робота препятствия
-  for (size_t i = 0; i<msg.ranges.size(); i++)
+  obstacle = false;
+  double minimum_range = msg.ranges[0];
+  for (size_t i = 0; i<msg.ranges.size()/2; ++i)
   {
+    if (msg.ranges[i] < minimum_range){
+      minimum_range = msg.ranges[i];
+    }
       if (msg.ranges[i] < kMinRange)
 	  {
 		  obstacle = true;
@@ -25,6 +32,7 @@ void laserCallback(const sensor_msgs::LaserScan& msg)
 		  break;
 	  }
   }
+  error = target_range - minimum_range;
 }
 
 
@@ -57,19 +65,13 @@ void timerCallback(const ros::TimerEvent&)
 	//если вблизи нет препятствия то задаем команды
     if (!obstacle)
 	{
-        if (counter % 30 > 15)
-		{
-			ROS_INFO_STREAM("go left");
-			cmd.linear.x = 0.5;
-			cmd.angular.z = 0.5;
-		}
-		else
-		{
-			ROS_INFO_STREAM("go right");
-			cmd.linear.x = 0.5;
-			cmd.angular.z = -0.5;
-		}
-	}
+    cmd.linear.x = 0.5;
+    cmd.angular.z = 0.05*error + 5*error*0.1 + 0.1*error/0.1;
+	} else {
+    ROS_WARN_STREAM("Stop! Spin around yourself!");
+    cmd.linear.x = 0;
+    cmd.angular.z = 1;
+  }
 	//отправляем (публикуем) команду
 	pub.publish(cmd);
 }
