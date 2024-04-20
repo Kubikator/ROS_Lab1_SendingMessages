@@ -14,8 +14,9 @@ void laserCallback(const sensor_msgs::LaserScan& msg)
 {
   ROS_DEBUG_STREAM("Laser msg: "<<msg.scan_time);
 
-  const double kMinRange = 0.3;
+  const double kMinRange = 0.4;
   //проверим нет ли вблизи робота препятствия
+  obstacle = false;
   for (size_t i = 0; i<msg.ranges.size(); i++)
   {
       if (msg.ranges[i] < kMinRange)
@@ -57,19 +58,12 @@ void timerCallback(const ros::TimerEvent&)
 	//если вблизи нет препятствия то задаем команды
     if (!obstacle)
 	{
-        if (counter % 30 > 15)
-		{
-			ROS_INFO_STREAM("go left");
-			cmd.linear.x = 0.5;
-			cmd.angular.z = 0.5;
-		}
-		else
-		{
-			ROS_INFO_STREAM("go right");
-			cmd.linear.x = 0.5;
-			cmd.angular.z = -0.5;
-		}
-	}
+    ROS_INFO_STREAM("Go straight!");
+    cmd.linear.x = 0.5;
+	} else {
+    ROS_INFO_STREAM("Spin around yourself!");
+    cmd.angular.z = 0.5;
+  }
 	//отправляем (публикуем) команду
 	pub.publish(cmd);
 }
