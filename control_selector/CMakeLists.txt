@@ -32,9 +32,15 @@ add_executable(control_selector
              src/wallfollower.h
              src/wallfollower.cpp
                                 )
+add_executable(selecting_menu
+		src/selecting_menu.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(control_selector
    ${catkin_LIBRARIES}
  )
+
+target_link_libraries(selecting_menu
+   ${catkin_LIBRARIES}
+)
 
