@@ -47,6 +47,21 @@ double LineControl::cross_track_err_circle()
     return  e;
 }
 
+double LineControl::cross_track_err_ellipse()
+{
+    double error;
+    if (x <= cleft_x){
+        error = sqrt(pow((cleft_x - x),2) + pow(cleft_y - y,2)) - R;
+    } else if ( x >= cright_x){
+        error = sqrt(pow((cright_x - x),2) + pow(cright_y - y,2)) - R;
+    } else if (y > 0){
+        error = up_line_y - y;
+    } else {
+        error = down_line_y - y;
+    }
+    return error;
+}
+
 void LineControl::publish_error(double e)
 {
     std_msgs::Float64 err;
@@ -66,7 +81,7 @@ void LineControl::timerCallback(const ros::TimerEvent&)
     if ( !obstacle )
     {
         //  вычислим текущую ошибку управления
-        double err = cross_track_err_line();
+        double err = cross_track_err_ellipse();
         //  публикация текущей ошибки
         publish_error(err);
         //  интегрируем ошибку
@@ -77,7 +92,11 @@ void LineControl::timerCallback(const ros::TimerEvent&)
         old_error = err;
         cmd.linear.x = task_vel;
         //  ПИД регулятор угловой скорости w = k*err + k_и * инт_err + k_д * дифф_err
-        cmd.angular.z = prop_factor * err + int_factor*int_error + diff_error * diff_factor;
+        if (y > 0 && x >= cleft_x && x <= cright_x){
+            cmd.angular.z = -(prop_factor * err + int_factor*int_error + diff_error * diff_factor);
+        } else {
+            cmd.angular.z = prop_factor * err + int_factor*int_error + diff_error * diff_factor;
+        }
         ROS_DEBUG_STREAM("error = "<<err<<" cmd v="<<cmd.linear.x<<" w = "<<cmd.angular.z);
     }
     //  отправляем (публикуем) команду
@@ -102,6 +121,11 @@ LineControl::LineControl():
     diff_factor = node.param("diff_factor", 0.0);
     min_obstacle_range = node.param("min_obstacle_range", 1.0);
     double dt = node.param("dt", 0.1);
+    cleft_x = -6;
+    cleft_y = cright_y = 0;
+    cright_x = 6;
+    up_line_y = 6;
+    down_line_y = -6;
 
     //  подписываемся на необъодимые данные
     laser_sub = node.subscribe("/scan", 100, &LineControl::laserCallback, this);
