@@ -5,6 +5,7 @@
 #include "control.h"
 #include "voyagercontrol.h"
 #include "dummy_control.h"
+#include "wallfollower.h"
 
 /*
  * Доработать проект control_selector, добавив класс движения вдоль стены
@@ -19,7 +20,7 @@ enum ControlEnum
 {
     DUMMY,
     VOYAGER,
-    // WALLFOLLOWER, // раскомментировать после добавления нового алгоритма
+    WALLFOLLOWER,
     nControls
 };
 
@@ -158,12 +159,15 @@ int main(int argc, char **argv)
   controls[VOYAGER] = new VoyagerControl(node.param("min_range", 1.0),
                                          node.param("max_vel", 0.5),
                                          node.param("max_omega", 0.5));
+  controls[WALLFOLLOWER] = new Wallfollower(node.param("min_range", 1.0),
+                                         node.param("max_vel", 0.5),
+                                         node.param("max_omega", 0.5));
   // здесь должны быть инициализированы и другие алгоритмы
   // controls[WALLFOLLOWER] = new WallFollower(...)
 
 
   //устанавливаем указатель на действующий алгоритм управления на любой (например первый) элемент массива
-  controlPtr = controls[VOYAGER];
+  controlPtr = controls[WALLFOLLOWER];
 
    /**
    * ros::spin() функция внутри которой происходит вся работа по приему сообщений
