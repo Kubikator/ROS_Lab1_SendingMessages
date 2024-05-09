@@ -65,6 +65,7 @@ void timerCallback(const ros::TimerEvent&)
 	//если вблизи нет препятствия то задаем команды
     if (!obstacle)
 	{
+    error += 0;
     cmd.linear.x = 0.5;
     cmd.angular.z = 0.05*error + 5*error*0.1 + 0.1*error/0.1;
 	} else {
