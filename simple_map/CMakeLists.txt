@@ -37,6 +37,8 @@ add_library(simple_map_lib include/simple_map/scan_to_map.h src/scan_to_map.cpp)
 ## Declare a C++ executable
 add_executable(simple_map_node src/simple_map.cpp)
 
+target_link_libraries(simple_map_node
+simple_map_lib)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(simple_map_node
   ${catkin_LIBRARIES}
